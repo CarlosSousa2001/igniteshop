@@ -7,6 +7,7 @@ import 'keen-slider/keen-slider.css'
 import { stripe } from '../lib/stripe';
 import { GetServerSideProps, GetStaticProps } from 'next';
 import Stripe from 'stripe';
+import Link from 'next/link';
 
 const Button = styled('button', {
   backgroundColor: '$rocketseat',
@@ -37,14 +38,16 @@ export default function Home({ products }: HomeProps) {
     <HomeContainer ref={sliderRef} className='keen-slider'>
       {products?.map(product => {
         return (
-          <Product key={product.id} className="keen-slider__slide">
+          <Link href={`/product/${product.id}`} key={product.id} >
+          <Product className="keen-slider__slide">
             <Image src={product.imageUrl} width={520} height={480} alt="" />
 
             <footer>
               <strong>{product.name}</strong>
-              <span>{product.price}</span>
+              <span>{product.price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</span>
             </footer>
           </Product>
+          </Link>
         )
       })}
     </HomeContainer>
