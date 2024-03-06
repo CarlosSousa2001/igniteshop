@@ -5,12 +5,13 @@ import { HomeContainer, Product } from '../styles/pages/home';
 import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.css'
 import { stripe } from '../lib/stripe';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetStaticProps } from 'next';
 import Stripe from 'stripe';
 
 const Button = styled('button', {
   backgroundColor: '$rocketseat',
 })
+
 
 interface HomeProps {
   products: {
@@ -50,7 +51,7 @@ export default function Home({ products }: HomeProps) {
   );
 }
 
-export const getServerSideProps = (async () => {
+export const getStaticProps = (async () => {
 
   const response = await stripe.products.list({
     expand: ['data.default_price']
@@ -72,7 +73,8 @@ export const getServerSideProps = (async () => {
   return {
     props: {
       products
-    }
+    },
+    revalidate: 3600
   }
 
-}) satisfies GetServerSideProps
+}) satisfies GetStaticProps
