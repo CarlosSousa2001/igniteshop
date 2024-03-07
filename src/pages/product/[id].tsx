@@ -13,13 +13,15 @@ interface ProductsProps {
     imageUrl: string
     price: number,
     description: string
+    defaultPriceId:string
   }
 }
 
 export default function ProductDetails({ product }: ProductsProps) {
 
-  const { query } = useRouter()
-
+  function handleBuyProduct(){
+    console.log(product.defaultPriceId)
+  }
 
   return (
     <ProductContainer>
@@ -33,7 +35,7 @@ export default function ProductDetails({ product }: ProductsProps) {
 
         <p>{product.description}</p>
 
-        <button>
+        <button onClick={() => handleBuyProduct()}>
           Comprar agora
         </button>
       </ProductDetailsComponent>
@@ -69,7 +71,8 @@ export const getStaticProps: GetStaticProps<any, {id:string}> = async ({params})
         name: item.name,
         imageUrl: item.images[0],
         price: price.unit_amount / 100,
-        description: item.description
+        description: item.description,
+        defaultPriceId: price.id
       }
     },
   }
