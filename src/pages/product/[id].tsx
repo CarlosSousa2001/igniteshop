@@ -41,8 +41,17 @@ export default function ProductDetails({ product }: ProductsProps) {
   )
 }
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths:[
+      {params: {id: 'prod_PgjWqTjX2qRIcG'}}
+    ],
+    fallback: 'blocking'
+  }
+}
 
-export const getServerSideProps: GetServerSideProps<any, {id:string}> = async ({params}) => {
+
+export const getStaticProps: GetStaticProps<any, {id:string}> = async ({params}) => {
 
   const productId = params.id;
 
