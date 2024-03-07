@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
 import { stripe } from '../../lib/stripe'
 import Stripe from 'stripe'
+import axios from 'axios'
 
 interface ProductsProps {
   product: {
@@ -19,8 +20,20 @@ interface ProductsProps {
 
 export default function ProductDetails({ product }: ProductsProps) {
 
-  function handleBuyProduct(){
-    console.log(product.defaultPriceId)
+  async function handleBuyProduct(){
+    try {
+      const response = await axios.post('/api/checkout', {
+          priceId: product.defaultPriceId
+      })
+
+      const {checkoutUrl} = response.data;
+
+      window.location.href = checkoutUrl;
+
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
