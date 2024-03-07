@@ -6,6 +6,7 @@ import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
 import { stripe } from '../../lib/stripe'
 import Stripe from 'stripe'
 import axios from 'axios'
+import Head from 'next/head'
 
 interface ProductsProps {
   product: {
@@ -14,19 +15,19 @@ interface ProductsProps {
     imageUrl: string
     price: number,
     description: string
-    defaultPriceId:string
+    defaultPriceId: string
   }
 }
 
 export default function ProductDetails({ product }: ProductsProps) {
 
-  async function handleBuyProduct(){
+  async function handleBuyProduct() {
     try {
       const response = await axios.post('/api/checkout', {
-          priceId: product.defaultPriceId
+        priceId: product.defaultPriceId
       })
 
-      const {checkoutUrl} = response.data;
+      const { checkoutUrl } = response.data;
 
       window.location.href = checkoutUrl;
 
@@ -37,36 +38,42 @@ export default function ProductDetails({ product }: ProductsProps) {
   }
 
   return (
-    <ProductContainer>
-      <ImageContainer>
-        <Image src={product.imageUrl} width={520} height={480} alt="" />
-      </ImageContainer>
+    <>
+      <Head>
+        <title>{product.name} | Ignite Shop</title>
+      </Head>
 
-      <ProductDetailsComponent>
-        <h1>{product.name}</h1>
-        <span>{product.price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</span>
+      <ProductContainer>
+        <ImageContainer>
+          <Image src={product.imageUrl} width={520} height={480} alt="" />
+        </ImageContainer>
 
-        <p>{product.description}</p>
+        <ProductDetailsComponent>
+          <h1>{product.name}</h1>
+          <span>{product.price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
 
-        <button onClick={() => handleBuyProduct()}>
-          Comprar agora
-        </button>
-      </ProductDetailsComponent>
-    </ProductContainer>
+          <p>{product.description}</p>
+
+          <button onClick={() => handleBuyProduct()}>
+            Comprar agora
+          </button>
+        </ProductDetailsComponent>
+      </ProductContainer>
+    </>
   )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
-    paths:[
-      {params: {id: 'prod_PgjWqTjX2qRIcG'}}
+    paths: [
+      { params: { id: 'prod_PgjWqTjX2qRIcG' } }
     ],
     fallback: 'blocking'
   }
 }
 
 
-export const getStaticProps: GetStaticProps<any, {id:string}> = async ({params}) => {
+export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ params }) => {
 
   const productId = params.id;
 
@@ -78,8 +85,8 @@ export const getStaticProps: GetStaticProps<any, {id:string}> = async ({params})
 
 
   return {
-    props:{
-      product:{
+    props: {
+      product: {
         id: item.id,
         name: item.name,
         imageUrl: item.images[0],
