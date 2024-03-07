@@ -2,7 +2,7 @@ import React from 'react'
 import { ImageContainer, ProductContainer, ProductDetailsComponent } from '../../styles/pages/product'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
 import { stripe } from '../../lib/stripe'
 import Stripe from 'stripe'
 
@@ -42,12 +42,12 @@ export default function ProductDetails({ product }: ProductsProps) {
 }
 
 
-export const getStaticPaths = (async({params}) => {
+export const getServerSideProps: GetServerSideProps<any, {id:string}> = async ({params}) => {
 
   const productId = params.id;
 
   const item = await stripe.products.retrieve(productId, {
-    expand: ['data.default_price']
+    expand: ['default_price']
   })
 
   const price = item.default_price as Stripe.Price
@@ -63,7 +63,5 @@ export const getStaticPaths = (async({params}) => {
         description: item.description
       }
     },
-    revalidate: 3600
   }
-
-}) 
+}
